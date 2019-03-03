@@ -11,7 +11,6 @@
 @interface Document : NSDocument
 
 @property (weak) IBOutlet NSImageView *image;
-@property (unsafe_unretained) IBOutlet NSTextView *status;
 
 @end
 

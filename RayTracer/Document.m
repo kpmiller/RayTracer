@@ -30,6 +30,10 @@
     return YES;
 }
 
+-(void) windowControllerDidLoadNib:(NSWindowController *)windowController
+{
+    [self updateImage];
+}
 
 - (NSString *)windowNibName {
     // Override returning the nib file name of the document
@@ -57,6 +61,11 @@
 
 -(void) updateImage
 {
+    if ((self.rt == NULL) || (self.rt->data == NULL))
+    {
+        self.image.image = nil;
+        return;
+    }
     int w = self.rt->width;
     int h = self.rt->height;
 
