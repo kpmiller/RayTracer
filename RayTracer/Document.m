@@ -13,6 +13,7 @@
 
 @property RTimage *rt;
 @property NSTimer *timer;
+@property (atomic) bool updating;
 @end
 
 @implementation Document
@@ -23,6 +24,7 @@
         // Add your subclass-specific initialization here.
     }
     self.rt = CreateRTimage(200,100);
+    self.updating = NO;
     return self;
 }
 
@@ -67,6 +69,9 @@
 
 -(void) updateImage
 {
+    if (self.updating)
+        return;
+    
     if ((self.rt == NULL) || (self.rt->data == NULL))
     {
         self.image.image = nil;
@@ -74,7 +79,7 @@
     }
     if (self.rt->changed == 0)
         return;
-    
+    self.updating = YES;
     self.rt->changed = 0;
     
     int w = self.rt->width;
@@ -105,19 +110,28 @@
             bytesPerRow:self.rt->width*4
             bitsPerPixel:32];
 
-    free(pixels);
-
     if (!bir)
     {
         NSLog(@"couldn't make NSBitmapImageRep");
         return;
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if ([NSThread isMainThread])
+    {
         CGImageSourceRef isr = CGImageSourceCreateWithData((CFDataRef)[bir TIFFRepresentation], NULL);
         CGImageRef image     = CGImageSourceCreateImageAtIndex(isr, 0, NULL);
         [self.image setImage:[[NSImage alloc] initWithCGImage:image size:NSMakeSize(w, h)]];
-    });
+    }
+    else
+    {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            CGImageSourceRef isr = CGImageSourceCreateWithData((CFDataRef)[bir TIFFRepresentation], NULL);
+            CGImageRef image     = CGImageSourceCreateImageAtIndex(isr, 0, NULL);
+            [self.image setImage:[[NSImage alloc] initWithCGImage:image size:NSMakeSize(w, h)]];
+        });
+    }
+    free(pixels);
+    self.updating = NO;
 }
 
 @end
