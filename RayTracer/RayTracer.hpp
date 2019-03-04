@@ -12,17 +12,21 @@
 #include <stdio.h>
 #include <stdint.h>
 
+
 #ifdef   __cplusplus
 extern "C" {
 #endif
 
 typedef struct {
-    int     height;
+    int     changed;
     int     width;
+    int     height;
     uint8_t *data;
 } RTimage;
 
-RTimage * CreateRTimage(int height, int width);
+RTimage * CreateRTimage(int width, int height);
+
+void Trace(RTimage *rt);
 
 #ifdef   __cplusplus
 };

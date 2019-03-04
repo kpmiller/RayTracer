@@ -9,9 +9,11 @@
 #include "RayTracer.hpp"
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include "RTDataTypes.hpp"
 
 
-RTimage * CreateRTimage(int height, int width)
+RTimage * CreateRTimage(int width, int height)
 {
     RTimage *rt = (RTimage*) malloc(sizeof(RTimage));
     rt->data    = (uint8_t*) malloc(height*width*sizeof(float)*3);
@@ -30,5 +32,46 @@ RTimage * CreateRTimage(int height, int width)
             f+=3;
         }
     }
+    rt->changed = 1;
     return rt;
+}
+
+vec3 color(const ray& r)
+{
+    vec3 unit_direction  = unit_vector(r.direction());
+    float t = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0-t) * vec3(1.0,1.0,1.0) + t*vec3(0.5, 0.7, 1.0);
+}
+
+void Trace(RTimage *rt)
+{
+    float nx = (float) rt->width;
+    float ny = (float) rt->height;
+    
+    vec3 lower_left_corner(-2.0, -1.0, -1.0);
+    vec3 horizontal(4.0, 0.0, 0.0);
+    vec3 vertical(0.0, 2.0, 0.0);
+    vec3 origin (0.0, 0.0, 0.0);
+    
+    float *fb = (float *) rt->data;
+
+    for (int j = rt->height-1; j >= 0; j--)
+    {
+        float *f = &fb[(rt->height-1-j)*rt->width*3];  //flip
+        float  v = (float) j / ny;
+        for (int i = 0; i < rt->width; i++)
+        {
+            float u = float(i) / nx;
+            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
+            
+            vec3 col = color(r);
+            
+            f[0] = col[0];
+            f[1] = col[1];
+            f[2] = col[2];
+            f += 3;
+        }
+        rt->changed = 1;
+        usleep(5000*10);
+    }
 }

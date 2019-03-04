@@ -12,7 +12,7 @@
 @interface Document ()
 
 @property RTimage *rt;
-
+@property NSTimer *timer;
 @end
 
 @implementation Document
@@ -22,7 +22,7 @@
     if (self) {
         // Add your subclass-specific initialization here.
     }
-    self.rt = CreateRTimage(200,200);
+    self.rt = CreateRTimage(200,100);
     return self;
 }
 
@@ -32,9 +32,15 @@
 
 -(void) windowControllerDidLoadNib:(NSWindowController *)windowController
 {
-    [self updateImage];
+    self.timer = [NSTimer timerWithTimeInterval:0.2f target:self selector:@selector(updateImage) userInfo:nil repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        Trace(self.rt);
+    });
 }
-
+                  
 - (NSString *)windowNibName {
     // Override returning the nib file name of the document
     // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
@@ -66,6 +72,11 @@
         self.image.image = nil;
         return;
     }
+    if (self.rt->changed == 0)
+        return;
+    
+    self.rt->changed = 0;
+    
     int w = self.rt->width;
     int h = self.rt->height;
 
@@ -101,10 +112,12 @@
         NSLog(@"couldn't make NSBitmapImageRep");
         return;
     }
-
-    CGImageSourceRef isr = CGImageSourceCreateWithData((CFDataRef)[bir TIFFRepresentation], NULL);
-    CGImageRef image     = CGImageSourceCreateImageAtIndex(isr, 0, NULL);
-    [self.image setImage:[[NSImage alloc] initWithCGImage:image size:NSMakeSize(w, h)]];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGImageSourceRef isr = CGImageSourceCreateWithData((CFDataRef)[bir TIFFRepresentation], NULL);
+        CGImageRef image     = CGImageSourceCreateImageAtIndex(isr, 0, NULL);
+        [self.image setImage:[[NSImage alloc] initWithCGImage:image size:NSMakeSize(w, h)]];
+    });
 }
 
 @end
