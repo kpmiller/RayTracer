@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F000B0F1222C829E00D69FE0 /* RTDataTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F000B0EF222C829E00D69FE0 /* RTDataTypes.cpp */; };
+		F0457BE5223428DB0060E4AF /* Hitable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0457BE3223428DB0060E4AF /* Hitable.cpp */; };
 		F0E60B9D222C5B06008D5604 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F0E60B9C222C5B06008D5604 /* AppDelegate.m */; };
 		F0E60BA0222C5B06008D5604 /* Document.m in Sources */ = {isa = PBXBuildFile; fileRef = F0E60B9F222C5B06008D5604 /* Document.m */; };
 		F0E60BA3222C5B06008D5604 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = F0E60BA1222C5B06008D5604 /* Document.xib */; };
@@ -20,6 +21,10 @@
 /* Begin PBXFileReference section */
 		F000B0EF222C829E00D69FE0 /* RTDataTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RTDataTypes.cpp; sourceTree = "<group>"; };
 		F000B0F0222C829E00D69FE0 /* RTDataTypes.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RTDataTypes.hpp; sourceTree = "<group>"; };
+		F0457BE3223428DB0060E4AF /* Hitable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Hitable.cpp; sourceTree = "<group>"; };
+		F0457BE4223428DB0060E4AF /* Hitable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Hitable.hpp; sourceTree = "<group>"; };
+		F0457BE622342D6A0060E4AF /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
+		F0457BE722342FDB0060E4AF /* HitableList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HitableList.hpp; sourceTree = "<group>"; };
 		F0E60B98222C5B06008D5604 /* RayTracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RayTracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0E60B9B222C5B06008D5604 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F0E60B9C222C5B06008D5604 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,6 +79,10 @@
 				F0E60BB3222C5C52008D5604 /* RayTracer.hpp */,
 				F000B0EF222C829E00D69FE0 /* RTDataTypes.cpp */,
 				F000B0F0222C829E00D69FE0 /* RTDataTypes.hpp */,
+				F0457BE3223428DB0060E4AF /* Hitable.cpp */,
+				F0457BE4223428DB0060E4AF /* Hitable.hpp */,
+				F0457BE722342FDB0060E4AF /* HitableList.hpp */,
+				F0457BE622342D6A0060E4AF /* Sphere.hpp */,
 				F0E60BA4222C5B07008D5604 /* Assets.xcassets */,
 				F0E60BA6222C5B07008D5604 /* MainMenu.xib */,
 				F0E60BA9222C5B07008D5604 /* Info.plist */,
@@ -156,6 +165,7 @@
 				F0E60BA0222C5B06008D5604 /* Document.m in Sources */,
 				F0E60BAB222C5B07008D5604 /* main.m in Sources */,
 				F0E60B9D222C5B06008D5604 /* AppDelegate.m in Sources */,
+				F0457BE5223428DB0060E4AF /* Hitable.cpp in Sources */,
 				F0E60BB4222C5C52008D5604 /* RayTracer.cpp in Sources */,
 				F000B0F1222C829E00D69FE0 /* RTDataTypes.cpp in Sources */,
 			);

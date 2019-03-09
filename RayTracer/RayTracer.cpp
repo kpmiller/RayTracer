@@ -11,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "RTDataTypes.hpp"
+#include "Sphere.hpp"
+#include "HitableList.hpp"
 
 
 RTimage * CreateRTimage(int width, int height)
@@ -36,30 +38,28 @@ RTimage * CreateRTimage(int width, int height)
     return rt;
 }
 
-float hit_sphere(const vec3& center, float radius, const ray&r)
+vec3 color(const ray& r, hitable* world)
 {
-    vec3 oc = r.origin() - center;
-    float a = dot (r.direction(), r.direction());
-    float b = 2.0f * dot(oc, r.direction());
-    float c = dot(oc,oc) - radius*radius;
-    float discriminant = b*b - 4.0f*a*c;
-    if (discriminant < 0)
-        return -1.0f;
-    else
-        return (-b - sqrt(discriminant)) / (2.0f*a);
-}
-
-vec3 color(const ray& r)
-{
-    float t = hit_sphere(vec3(0.0f,0.0f,-1.0f), 0.5, r);
-    if (t > 0.0f)
+    hit_record rec;
+    if (world->hit(r, 0.0, MAXFLOAT, rec))
     {
-        vec3 N = unit_vector(r.point_at_parameter(t) - vec3(0.0f, 0.0f, -1.0f));
-        return 0.5 * (vec3(N.x() + 1.0f, N.y() + 1.0f, N.z() + 1.0f));
+        return 0.5 * vec3(rec.normal.x() + 1.0, rec.normal.y()+1.0, rec.normal.z()+1.0);
     }
-    vec3 unit_direction  = unit_vector(r.direction());
-    t = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0-t) * vec3(1.0,1.0,1.0) + t*vec3(0.5, 0.7, 1.0);
+    else
+    {
+        vec3 unit_direction = unit_vector(r.direction());
+        float t = 0.5 * (unit_direction.y() + 1.0);
+        return (1.0-t) * vec3(1.0f, 1.0f, 1.0f) + t*vec3(0.5f, 0.7f, 1.0f);
+    }
+//    float t = hit_sphere(vec3(0.0f,0.0f,-1.0f), 0.5, r);
+//    if (t > 0.0f)
+//    {
+//        vec3 N = unit_vector(r.point_at_parameter(t) - vec3(0.0f, 0.0f, -1.0f));
+//        return 0.5 * (vec3(N.x() + 1.0f, N.y() + 1.0f, N.z() + 1.0f));
+//    }
+//    vec3 unit_direction  = unit_vector(r.direction());
+//    t = 0.5 * (unit_direction.y() + 1.0);
+//    return (1.0-t) * vec3(1.0,1.0,1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
 void Trace(RTimage *rt)
@@ -73,7 +73,12 @@ void Trace(RTimage *rt)
     vec3 origin (0.0, 0.0, 0.0);
     
     float *fb = (float *) rt->data;
-
+    
+    hitable *list[2];
+    list[0] = new sphere(vec3(0,0,-1), 0.5);
+    list[1] = new sphere(vec3(0, -100.5, -1), 100.0);
+    hitable *world = new hitable_list(list, 3);
+    
     for (int j = rt->height-1; j >= 0; j--)
     {
         float *f = &fb[(rt->height-1-j)*rt->width*3];  //flip
@@ -83,7 +88,7 @@ void Trace(RTimage *rt)
             float u = float(i) / nx;
             ray r(origin, lower_left_corner + u*horizontal + v*vertical);
             
-            vec3 col = color(r);
+            vec3 col = color(r, world);
             
             f[0] = col[0];
             f[1] = col[1];
