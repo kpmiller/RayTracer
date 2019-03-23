@@ -38,6 +38,7 @@
 		F0E60BAC222C5B07008D5604 /* RayTracer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RayTracer.entitlements; sourceTree = "<group>"; };
 		F0E60BB2222C5C52008D5604 /* RayTracer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RayTracer.cpp; sourceTree = "<group>"; };
 		F0E60BB3222C5C52008D5604 /* RayTracer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RayTracer.hpp; sourceTree = "<group>"; };
+		F0F2EA6E224693A700F6DC4B /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +84,7 @@
 				F0457BE4223428DB0060E4AF /* Hitable.hpp */,
 				F0457BE722342FDB0060E4AF /* HitableList.hpp */,
 				F0457BE622342D6A0060E4AF /* Sphere.hpp */,
+				F0F2EA6E224693A700F6DC4B /* Camera.hpp */,
 				F0E60BA4222C5B07008D5604 /* Assets.xcassets */,
 				F0E60BA6222C5B07008D5604 /* MainMenu.xib */,
 				F0E60BA9222C5B07008D5604 /* Info.plist */,

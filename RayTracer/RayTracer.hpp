@@ -21,6 +21,7 @@ typedef struct {
     int     changed;
     int     width;
     int     height;
+    int     numsamples;
     uint8_t *data;
 } RTimage;
 

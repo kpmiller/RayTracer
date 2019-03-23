@@ -13,6 +13,7 @@
 #include "RTDataTypes.hpp"
 #include "Sphere.hpp"
 #include "HitableList.hpp"
+#include "Camera.hpp"
 
 
 RTimage * CreateRTimage(int width, int height)
@@ -21,6 +22,7 @@ RTimage * CreateRTimage(int width, int height)
     rt->data    = (uint8_t*) malloc(height*width*sizeof(float)*3);
     rt->width   = width;
     rt->height  = height;
+    rt->numsamples = 100;
 
     float *f = (float*) rt->data;
     for (int y = 0; y < height; y++)
@@ -77,25 +79,28 @@ void Trace(RTimage *rt)
     hitable *list[2];
     list[0] = new sphere(vec3(0,0,-1), 0.5);
     list[1] = new sphere(vec3(0, -100.5, -1), 100.0);
-    hitable *world = new hitable_list(list, 3);
-    
+    hitable *world = new hitable_list(list, 2);
+    camera  cam;
     for (int j = rt->height-1; j >= 0; j--)
     {
         float *f = &fb[(rt->height-1-j)*rt->width*3];  //flip
-        float  v = (float) j / ny;
         for (int i = 0; i < rt->width; i++)
         {
-            float u = float(i) / nx;
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
-            
-            vec3 col = color(r, world);
-            
+            vec3 col(0,0,0);
+            for (int s=0; s < rt->numsamples; s++ )
+            {
+                float u = float(i + drand48()) / nx;
+                float v = float(j + drand48()) / ny;
+                ray r = cam.get_ray(u, v);
+//                vec3 p = r.point_at_parameter(2.0);
+                col += color(r, world);
+            }
+            col /= (float) rt->numsamples;
             f[0] = col[0];
             f[1] = col[1];
             f[2] = col[2];
             f += 3;
         }
         rt->changed = 1;
-        usleep(2000*10);
     }
 }
