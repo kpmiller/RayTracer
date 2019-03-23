@@ -23,7 +23,7 @@
     if (self) {
         // Add your subclass-specific initialization here.
     }
-    self.rt = CreateRTimage(200,100);
+    self.rt = CreateRTimage(400,200);
     self.updating = NO;
     return self;
 }

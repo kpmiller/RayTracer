@@ -40,12 +40,24 @@ RTimage * CreateRTimage(int width, int height)
     return rt;
 }
 
+vec3 random_in_unit_sphere() {
+    vec3 p;
+    do {
+        p = 2.0 * vec3(drand48(), drand48(), drand48()) - vec3(1,1,1);
+    } while (p.squared_length() >= 1.0);
+    return p;
+}
+
+static int depth = 0;
+
 vec3 color(const ray& r, hitable* world)
 {
+    depth = depth + 1;
     hit_record rec;
-    if (world->hit(r, 0.0, MAXFLOAT, rec))
+    if ((depth < 200) && world->hit(r, 0.001, MAXFLOAT, rec))
     {
-        return 0.5 * vec3(rec.normal.x() + 1.0, rec.normal.y()+1.0, rec.normal.z()+1.0);
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5 * color (ray (rec.p, target-rec.p), world);
     }
     else
     {
@@ -53,15 +65,6 @@ vec3 color(const ray& r, hitable* world)
         float t = 0.5 * (unit_direction.y() + 1.0);
         return (1.0-t) * vec3(1.0f, 1.0f, 1.0f) + t*vec3(0.5f, 0.7f, 1.0f);
     }
-//    float t = hit_sphere(vec3(0.0f,0.0f,-1.0f), 0.5, r);
-//    if (t > 0.0f)
-//    {
-//        vec3 N = unit_vector(r.point_at_parameter(t) - vec3(0.0f, 0.0f, -1.0f));
-//        return 0.5 * (vec3(N.x() + 1.0f, N.y() + 1.0f, N.z() + 1.0f));
-//    }
-//    vec3 unit_direction  = unit_vector(r.direction());
-//    t = 0.5 * (unit_direction.y() + 1.0);
-//    return (1.0-t) * vec3(1.0,1.0,1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
 void Trace(RTimage *rt)
@@ -93,12 +96,13 @@ void Trace(RTimage *rt)
                 float v = float(j + drand48()) / ny;
                 ray r = cam.get_ray(u, v);
 //                vec3 p = r.point_at_parameter(2.0);
+                depth = 0;
                 col += color(r, world);
             }
             col /= (float) rt->numsamples;
-            f[0] = col[0];
-            f[1] = col[1];
-            f[2] = col[2];
+            f[0] = sqrtf(col[0]);
+            f[1] = sqrtf(col[1]);
+            f[2] = sqrtf(col[2]);
             f += 3;
         }
         rt->changed = 1;
