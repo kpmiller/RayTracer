@@ -78,13 +78,14 @@ void Trace(RTimage *rt)
     float *fb = (float *) rt->data;
     
     hitable *list[5];
-    list[0] = new sphere(vec3(0,0,-1), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
+    float R = cos(M_PI/4.0);
+    list[0] = new sphere(vec3(0,0,-1), 0.5, new lambertian(vec3(0.2, 0.3, 0.8)));
     list[1] = new sphere(vec3(0, -100.5, -1), 100.0, new lambertian(vec3(0.8, 0.8, 0.0)));
     list[2] = new sphere(vec3(1,0,-1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.3));
     list[3] = new sphere(vec3(-1,0,-1), 0.5, new dielectric(1.5));
     list[4] = new sphere(vec3(-1,0,-1), -0.45, new dielectric(1.5));
     hitable *world = new hitable_list(list, 5);
-    camera  cam;
+    camera  cam(vec3(-2,2,1), vec3(0,0,-1), vec3(0,1,0), 30, nx/ny);
     for (int j = rt->height-1; j >= 0; j--)
     {
         float *f = &fb[(rt->height-1-j)*rt->width*3];  //flip
