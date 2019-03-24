@@ -77,6 +77,9 @@ inline vec3& vec3::operator/=(float k) { float t=(1.0f/k); e[0] *= t; e[1] *= t;
 
 inline vec3 unit_vector(vec3 v) { return v/ v.length();}
 
+inline vec3 reflect(const vec3&v, const vec3&n) {
+    return v-2*dot(v,n)*n;
+}
 
 class ray
 {
@@ -90,5 +93,6 @@ public:
     vec3 B;
 };
 
+vec3 random_in_unit_sphere();
 
 #endif /* RTDataTypes_hpp */
