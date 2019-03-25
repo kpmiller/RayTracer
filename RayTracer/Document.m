@@ -23,7 +23,7 @@
     if (self) {
         // Add your subclass-specific initialization here.
     }
-    self.rt = CreateRTimage(200,100);
+    self.rt = CreateRTimage(1024,512);
     self.updating = NO;
     return self;
 }
@@ -49,23 +49,24 @@
     return @"Document";
 }
 
+- (BOOL)writeToURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable __autoreleasing *)outError
+{
+    
+    CGImageRef cgRef = [self.image.image CGImageForProposedRect:NULL
+                                             context:nil
+                                               hints:nil];
+    NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
+    [newRep setSize:self.image.image.size];   // if you want the same resolution
+    NSData *pngData = [newRep representationUsingType:NSBitmapImageFileTypePNG properties: @{}];
+    [pngData writeToURL:url atomically:YES];
 
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
-    // Insert code here to write your document to data of the specified type. If outError != NULL, ensure that you create and set an appropriate error if you return nil.
-    // Alternatively, you could remove this method and override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-    [NSException raise:@"UnimplementedMethod" format:@"%@ is unimplemented", NSStringFromSelector(_cmd)];
-    return nil;
-}
-
-
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
-    // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error if you return NO.
-    // Alternatively, you could remove this method and override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
-    // If you do, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
-    [NSException raise:@"UnimplementedMethod" format:@"%@ is unimplemented", NSStringFromSelector(_cmd)];
+    
+//
+//    NSBitmapImageRep *imgRep = (NSBitmapImageRep*) [[self.image.image representations] objectAtIndex: 0];
+//    NSData *data = [imgRep representationUsingType: NSBitmapImageFileTypePNG properties: @{}];
+//    [data writeToURL:url atomically:YES];
     return YES;
 }
-
 
 -(void) updateImage
 {

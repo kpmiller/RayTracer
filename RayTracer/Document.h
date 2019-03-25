@@ -11,6 +11,5 @@
 @interface Document : NSDocument
 
 @property (weak) IBOutlet NSImageView *image;
-
 @end
 
